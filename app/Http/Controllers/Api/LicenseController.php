@@ -11,7 +11,7 @@ use App\Http\Requests\LicenseRequestStatus;
 class LicenseController extends Controller
 {
     public function __construct(
-        public LicenseService $licenseService
+        private LicenseService $licenseService
     ) {
     }
 

@@ -10,14 +10,13 @@ use Illuminate\Http\Request;
 class CompanyController extends Controller
 {
     public function __construct(
-        public CompanyService $companyService
+        private CompanyService $companyService
     ) {
     }
 
     public function create(CompanyRequest $request)
     {
         $validated = $request->validated();
-        dd($validated);
         $this->companyService->create($request->all());
     }
 }

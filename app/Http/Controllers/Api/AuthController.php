@@ -11,7 +11,7 @@ use Illuminate\Http\RedirectResponse;
 class AuthController extends Controller
 {
     public function __construct(
-        public ApiAuthService $apiAuthService
+        private ApiAuthService $apiAuthService
     ) {
     }
 

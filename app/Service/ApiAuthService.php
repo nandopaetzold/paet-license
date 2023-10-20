@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Models\Company;
 use Illuminate\Support\Facades\Hash;
+
 class ApiAuthService
 {
     public function __construct(
@@ -20,44 +21,45 @@ class ApiAuthService
     public function authenticate($validate, $request)
     {
         $validate = $request->validated();
-
-
         $credentials = $request->only(
             'email',
             'password'
         );
-        
-        if(!isset($credentials['email'])|| empty($credentials['email'])){
+
+        if (!isset($credentials['email']) || empty($credentials['email'])) {
             return response()->json([
                 'message' => 'Email is required'
             ], 401);
         }
-         return $this->createTokenByCredentials($credentials);
+        return $this->createTokenByCredentials($credentials);
     }
 
     public function createTokenByCredentials($credentials)
-    {   
-        if(!isset($credentials['email']) || empty($credentials['email'])){
+    {
+        try {
+            
+            $company = $this->companyService->findByEmail($credentials['email']);
+            
+            if (!$company || !Hash::check($credentials['password'], $company->password)) {
+                throw new \Exception('As credenciais estão incorretas');
+            }
+            //delet olds tokens
+            $company->tokens()->delete();
+
+
+            $token = $company->createToken('auth_token')->plainTextToken;
+
             return response()->json([
-                'message' => 'Email is required'
+                'access_token' => $token,
+                'token_type' => 'Bearer'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
             ], 401);
         }
-        $company = $this->companyService->findByEmail($credentials['email']);
-        if (!$company || !Hash::check($credentials['password'], $company->password)) {
-            return response()->json([
-                'message' => 'Verifique o E-mail e Senha'
-            ], 401);
-        }
-        //delet olds tokens
-        $company->tokens()->delete();
-
-
-        $token = $company->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer'
-        ]);
     }
 
     public function user($request)

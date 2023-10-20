@@ -34,8 +34,9 @@ class CompanyService
     }
     
 
-    public function findByEmail($id)
+    public function findByEmail($email)
     {
-        return Company::where('email', $id)->first();
+        $companie = Company::where('email', $email)->first();
+        return $companie;
     }
 }

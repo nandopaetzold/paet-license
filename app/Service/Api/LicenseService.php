@@ -49,15 +49,11 @@ class LicenseService
 
     public function update($request)
     {
-        $license = $this->license->where('token', $request->token)->first();
 
-        if ($license) {
-            //token nao pertence a empresa
-            if ($license->company_id != auth()->user()->id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Licença não pertence ao seu cadastro!',
-                ], 400);
+        try {
+            $license = $this->license->where('token', $request->token)->first();
+            if (!$license || $license->company_id != auth()->user()->id) {
+                throw new \Exception('Licença não pertence ao seu cadastro!');
             }
             if ($request->name) {
                 $license->name = $request->name;
@@ -83,24 +79,23 @@ class LicenseService
                 'message' => 'Licença atualizada com sucesso!',
                 'token' => $license
             ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
         }
-        return response()->json([
-            'success' => false,
-            'message' => 'Licença não encontrada!',
-        ], 400);
+
     }
 
 
     public function delete($token)
     {
-        $license = $this->license->where('token', $token)->first();
-        if ($license) {
-            //token nao pertence a empresa
-            if ($license->company_id != auth()->user()->id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Licença não pertence ao seu cadastro!',
-                ], 400);
+        try {
+            $license = $this->license->where('token', $token)->first();
+            if (!$license || $license->company_id != auth()->user()->id) {
+                throw new \Exception('Licença não pertence ao seu cadastro!');
             }
 
             $license->delete();
@@ -108,23 +103,21 @@ class LicenseService
                 'success' => true,
                 'message' => 'Licença removida com sucesso!',
             ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
         }
-        return response()->json([
-            'success' => false,
-            'message' => 'Licença não encontrada!',
-        ], 400);
     }
 
     public function status($token)
     {
-        $license = $this->license->where('token', $token)->first();
-        if ($license) {
+        try {
+            $license = $this->license->where('token', $token)->first();
 
-            if (!is_null($license->ip_address) && $license->ip_address != request()->ip()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Licença não habilitada para esse ip!',
-                ], 400);
+            if (!$license || !is_null($license->ip_address) && $license->ip_address != request()->ip()) {
+                throw new \Exception('Licença não pertence ao seu cadastro!');
             }
 
             //count ++
@@ -145,10 +138,11 @@ class LicenseService
 
                 ]
             ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 400);
         }
-        return response()->json([
-            'status' => false,
-            'message' => 'Licença não encontrada!',
-        ], 400);
     }
 }

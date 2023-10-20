@@ -9,7 +9,7 @@ use App\Service\Painel\HomeService;
 class HomeController extends Controller
 {
     public function __construct(
-        public HomeService $homeService
+        private HomeService $homeService
     ) {
     }
 
