@@ -8,5 +8,5 @@ Route::prefix('painel')->group(function () {
 
 //Document routes
 Route::prefix('/')->group(function () {
-    Route::get('/documentacao-api', [App\Http\Controllers\Web\DocumentController::class, 'index'])->name('painel.documents');
+   Route::get('/', [App\Http\Controllers\Web\HomeController::class, 'index'])->name('web.home');
 });

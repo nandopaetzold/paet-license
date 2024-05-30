@@ -1,0 +1,100 @@
+#about .about-content h2 {
+	color: #c49b13 !important;
+	font-family: "Bebas Neue", sans-serif;
+}
+
+#about .about-content p {
+	color: #e4e4e4 !important;
+	font-family: "Roboto", sans-serif;
+	font-size: 1.2rem;
+    
+    text-align: justify;
+}
+
+#about .about-image {
+	background-color: #080700 !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: url(../images/bg-about.png) no-repeat center;
+    background-size: cover;
+    border-radius: 3px;
+}
+
+#about .about-content ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#about .about-content ul li {
+    padding: 10px 0;
+    
+    display: flex;
+    flex-direction: row;
+}
+
+#about .about-content ul li span {
+    padding-right: 10px;
+}
+
+#about .about-content ul li h4 {
+    color: #c49b13;
+    
+font-family: "Bebas Neue", sans-serif;
+    font-size: 1.3rem;
+}
+
+#about .about-content ul li p {
+    color: #e4e4e4;
+    
+    text-align: justify;
+    font-size: 0.8rem;
+}
+
+#features .features-content h1{
+    color: #c49b13;
+    font-family: "Bebas Neue", sans-serif;
+    text-align: center;
+    
+}
+
+#features .features-content p{
+    color: #e4e4e4;
+    font-family: "Roboto", sans-serif;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+#features .features-content .feature-item {
+   background-color: #080700;
+    padding: 20px;
+    border-radius: 3px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#features .features-content .feature-item h3 {
+    color: #c49b13;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.5rem;
+    padding: 10px 0;
+    text-align: center;
+}
+
+#features .features-content .feature-item i{
+    color: #c49b13;
+    font-size: 3rem;
+}
+
+#features .features-content .feature-item p {
+    color: #e4e4e4;
+    font-family: "Roboto", sans-serif;
+    font-size: 1rem;
+    text-align: center;
+    text-align: justify;
+}

@@ -27,21 +27,21 @@ class LicenseService
 
             $license = $this->license->create([
                 'name' => $request->name,
-                'expires_at' => $request->expires_at,
+                'expires_at' => $request->expires_at ?? null,
                 'token' => $token,
                 'company_id' => $company->id,
                 'status' => 1,
-                'webhook_url' => $request->webhook_url,
+                'webhook_url' => $request->webhook_url ?? null,
                 'ip_address' => $request->ip_address ?? null,
             ]);
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'message' => 'Licença criada com sucesso!',
                 'token' => $license
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'message' => 'Erro ao criar licença!',
             ], 400);
         }
@@ -117,7 +117,7 @@ class LicenseService
             $license = $this->license->where('token', $token)->first();
 
             if (!$license || !is_null($license->ip_address) && $license->ip_address != request()->ip()) {
-                throw new \Exception('Licença não pertence ao seu cadastro!');
+                throw new \Exception('Licença não encontrada!', 404);
             }
 
             //count ++
@@ -130,8 +130,8 @@ class LicenseService
                 'license' => [
                     'name' => $license->name,
                     'company' => $license->company->name ?? 'Não informado',
-                    'expires' => date('Y-m-d', strtotime($license->expires_at)),
-                    'status' => $license->is_active == 1 ? true : false,
+                    'expires' => $license->expires_at ? date('Y-m-d', strtotime($license->expires_at)) : 'Licença vitalícia',
+                    'status' => $this->verificarTempo($license->expires_at, $license->is_active) ? true : false,
                     'webhook_url' => $license->webhook_url ?? 'Não informado',
                     'created' => date('Y-m-d', strtotime($license->created_at)),
                     'request_count' => $license->request_count
@@ -144,5 +144,23 @@ class LicenseService
                 'message' => $e->getMessage(),
             ], 400);
         }
+    }
+
+    private function verificarTempo($tempo, $status)
+    {
+
+        if (!is_null($tempo)) {
+            if (strtotime($tempo) > strtotime(date('Y-m-d')) && $status == 1) {
+                return true;
+            }
+            return false;
+        }
+
+        if ($status == 1) {
+            return true;
+        }
+        return false;
+
+
     }
 }
